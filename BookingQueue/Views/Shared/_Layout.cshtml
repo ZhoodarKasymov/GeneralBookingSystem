@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" href="~/images/title_icon.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/lib/css/sweetalert2.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+<body>
+<header>
+    <nav class="navbar first-gns-nav admin-nav" style="background-color: #2c3034">
+        <div class="container">
+            <a class="navbar-brand p-0 m-0" href="/">
+                <img src="~/images/title_icon.png" width="70" height="60" class="d-inline-block align-top" alt="">
+                <p class="text-nav-gns-brand text-white">Q SOLUTIONS предварительная очередь</p>
+            </a>
+            <div class="d-flex">
+                <a asp-controller="Home" asp-action="SetLanguage" asp-route-culture="uk" asp-route-returnUrl="@Context.Request.Path" class="nav-item nav-link lang-link notranslate" id="kyr-lang">Кыр</a>
+                <a asp-controller="Home" asp-action="SetLanguage" asp-route-culture="ru" asp-route-returnUrl="@Context.Request.Path" class="nav-item nav-link lang-link notranslate" id="rus-lang">Рус</a>
+            </div>
+        </div>
+    </nav>
+    @* <nav class="navbar second-gns-nav w-100"> *@
+    @*     <div class="container justify-content-start"> *@
+    @*         <a class="nav-item nav-link gns-nav-link" href="https://sti.gov.kg/section/0/%D0%BE_%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%BB%D1%83%D0%B6%D0%B1%D0%B5">@Localization.GetLocalizedString("Header_link_1")</a> *@
+    @*         <a class="nav-item nav-link gns-nav-link" href="https://sti.gov.kg/section/0/%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B">@Localization.GetLocalizedString("Header_link_2")</a> *@
+    @*         <a class="nav-item nav-link gns-nav-link" href="https://sti.gov.kg/section/0/%D1%84%D0%BE%D1%80%D0%BC%D1%8B_%D0%BE%D1%82%D1%87%D1%91%D1%82%D0%BE%D0%B2">@Localization.GetLocalizedString("Header_link_3")</a> *@
+    @*         <a class="nav-item nav-link gns-nav-link" href="https://sti.gov.kg/section/0/%D0%B1%D0%B0%D0%B7%D0%B0_%D0%B7%D0%BD%D0%B0%D0%BD%D0%B8%D0%B9">@Localization.GetLocalizedString("Header_link_4")</a> *@
+    @*         <a class="nav-item nav-link gns-nav-link" href="https://sti.gov.kg/section/0/%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D1%8B">@Localization.GetLocalizedString("Header_link_5")</a> *@
+    @*         <a class="nav-item nav-link gns-nav-link" href="https://sti.gov.kg/section/0/%D0%BF%D1%80%D0%B5%D1%81%D1%81-%D1%86%D0%B5%D0%BD%D1%82%D1%80">@Localization.GetLocalizedString("Header_link_6")</a> *@
+    @*     </div> *@
+    @* </nav> *@
+    <nav class="navbar third-gns-nav w-100">
+        <div class="container justify-content-start position-relative">
+            <span class="nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z" fill="#5A5956"/>
+                </svg>
+            </span>
+            <a class="nav-item nav-link gns-nav-link gns-nav-link-third" href="https://sti.gov.kg/">@Localization.GetLocalizedString("Header_path_link")</a>
+            /
+            <a class="nav-item nav-link gns-nav-link gns-nav-link-third" href="#">@ViewData["Title"]</a>
+
+            <a asp-area="" asp-controller="Branch" asp-action="DownloadDocs" asp-route-docType="InstructionForQueue" target="_blank" class="email-request position-absolute">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24" fill="none">
+                    <g clip-path="url(#clip0_1026_939)">
+                        @* <path d="M22 7.53125V16.9963C22 17.7615 21.7077 18.4978 21.1827 19.0545C20.6578 19.6113 19.9399 19.9464 19.176 19.9913L19 19.9963H5C4.23479 19.9963 3.49849 19.7039 2.94174 19.179C2.38499 18.654 2.04989 17.9361 2.005 17.1723L2 16.9963V7.53125L11.445 13.8282L11.561 13.8942C11.6977 13.961 11.8478 13.9958 12 13.9958C12.1522 13.9958 12.3023 13.961 12.439 13.8942L12.555 13.8282L22 7.53125Z" fill="#0E9298"/> *@
+                        @* <path d="M5.25589 16C3.8899 15.0291 3 13.4422 3 11.6493C3 9.20008 4.8 6.9375 7.5 6.5C8.34694 4.48637 10.3514 3 12.6893 3C15.684 3 18.1317 5.32251 18.3 8.25C19.8893 8.94488 21 10.6503 21 12.4969C21 14.0582 20.206 15.4339 19 16.2417M12 21V11M12 21L9 18M12 21L15 18" fill="#0E9298"/> *@
+                        <path d="M9.878,18.122a3,3,0,0,0,4.244,0l3.211-3.211A1,1,0,0,0,15.919,13.5l-2.926,2.927L13,1a1,1,0,0,0-1-1h0a1,1,0,0,0-1,1l-.009,15.408L8.081,13.5a1,1,0,0,0-1.414,1.415Z" fill="#0E9298"/>
+                        <path d="M23,16h0a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H3a1,1,0,0,1-1-1V17a1,1,0,0,0-1-1H1a1,1,0,0,0-1,1v4a3,3,0,0,0,3,3H21a3,3,0,0,0,3-3V17A1,1,0,0,0,23,16Z" fill="#0E9298"/>
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_1026_939">
+                            <rect width="24" height="24" fill="white"/>
+                        </clipPath>
+                    </defs>
+                </svg>
+                @Localization.GetLocalizedString("Email_request")
+            </a>
+        </div>
+    </nav>
+</header>
+
+<div class="container body-container">
+    <div id="loader"></div>
+    <div id="overlay"></div>
+    <main role="main" class="pb-5">
+        @RenderBody()
+    </main>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery/jquery.inputmask.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/sweetalert2.all.min.js"></script>
+<script src="~/lib/html2canvas.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

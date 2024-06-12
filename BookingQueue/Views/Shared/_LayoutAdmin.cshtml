@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" href="~/images/title_icon.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/lib/css/sweetalert2.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+<body>
+<header>
+    <nav class="navbar first-gns-nav admin-nav">
+        <div class="container">
+            <a class="navbar-brand p-0 m-0" href="/admin/manage">
+                <img src="~/images/QS logo 6 1.png" width="250" height="50" class="d-inline-block align-top" alt="">
+                @* <p class="text-nav-gns-brand">@Localization.GetLocalizedString("Header_title")</p> *@
+            </a>
+            @* <div class="d-flex"> *@
+            @*     <a asp-controller="Home" asp-action="SetLanguage" asp-route-culture="uk" asp-route-returnUrl="@Context.Request.Path" class="nav-item nav-link lang-link notranslate" id="kyr-lang">Кыр</a> *@
+            @*     <a asp-controller="Home" asp-action="SetLanguage" asp-route-culture="ru" asp-route-returnUrl="@Context.Request.Path" class="nav-item nav-link lang-link notranslate" id="rus-lang">Рус</a> *@
+            @* </div> *@
+        </div>
+    </nav>
+    <nav class="navbar third-gns-nav w-100">
+        <div class="container justify-content-start position-relative">
+            <span class="nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z" fill="#5A5956"/>
+                </svg>
+            </span>
+            <a class="nav-item nav-link gns-nav-link gns-nav-link-third" href="/admin/manage">Админка</a>
+            /
+            <a class="nav-item nav-link gns-nav-link gns-nav-link-third" href="#">@ViewData["Title"]</a>
+            
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <a asp-area="" asp-controller="Auth" asp-action="Logout" class="email-request position-absolute">
+                    Выйти
+                </a>
+            }
+        </div>
+    </nav>
+</header>
+
+<div class="container body-container">
+    <div id="loader"></div>
+    <div id="overlay"></div>
+    <main role="main" class="pb-5">
+        @RenderBody()
+    </main>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery/jquery.inputmask.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/sweetalert2.all.min.js"></script>
+<script src="~/lib/html2canvas.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

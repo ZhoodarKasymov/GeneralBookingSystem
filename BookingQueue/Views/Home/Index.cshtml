@@ -1,0 +1,82 @@
+﻿@using AspNetCore.ReCaptcha
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BookingQueue.Common.Models.ViewModels.BookViewModel
+
+@{
+    ViewData["Title"] = Localization.GetLocalizedString("HomePage_title");
+}
+
+<div>
+    <h4>
+        <bold>@ViewData["Title"]</bold>
+    </h4>
+</div>
+
+<form asp-controller="Home" asp-action="Index" method="post" class="row g-3 needs-validation" novalidate>
+    @Html.AntiForgeryToken()
+
+    <p class="mb-3">@Localization.GetLocalizedString("HomePage_description")</p>
+    <hr>
+    <div class="col-12 col-md-6">
+        <div class="form-group">
+            <div class="w-100">
+                <label>
+                    <span class="d-inline fw-bold">
+                        @Localization.GetLocalizedString("Name")
+                        <div class="d-inline text-danger">*</div>
+                    </span>
+                </label>
+                <div class="bs-custom-control w-100 d-flex flex-wrap align-items-center">
+                    <div class="w-100">
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control custom-input-gns", required = "required", autocomplete="off" })
+                        <div class="invalid-feedback">@(string.Format(Localization.GetLocalizedString("Validation_cant_be_empty"), Localization.GetLocalizedString("Name")))</div>
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <div class="form-group">
+            <div class="w-100">
+                <label>
+                    <span class="d-inline fw-bold">
+                        @Localization.GetLocalizedString("Phone")
+                        <div class="d-inline text-danger">*</div>
+                    </span>
+                </label>
+                <div class="bs-custom-control w-100 d-flex flex-wrap align-items-center">
+                    <div class="w-100">
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control custom-input-gns phone-input", required = "required", autocomplete="off" })
+                        <div class="invalid-feedback">@(string.Format(Localization.GetLocalizedString("Validation_cant_be_empty"), Localization.GetLocalizedString("Phone")))</div>
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check">
+            <input class="form-check-input custom-input-gns" type="checkbox" value="" id="invalidCheck" required>
+            <label class="form-check-label" for="invalidCheck">
+                @Localization.GetLocalizedString("Agree") <a asp-area="" asp-controller="Branch" asp-action="DownloadDocs" asp-route-docType="Privacy" target="_blank">@Localization.GetLocalizedString("WithPrivacy")</a>
+            </label>
+            <div class="invalid-feedback">
+                @Localization.GetLocalizedString("Privacy_text")
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mt-3">
+        @Html.ValidationMessage("Recaptcha", "", new { @class = "text-danger" })
+        @Html.ReCaptcha()
+
+        <div class="row">
+            <div class="col-12 col-md-4 mt-3">
+                <button type="submit" class="btn custom_button_gns">@Localization.GetLocalizedString("Next")</button>
+            </div>
+        </div>
+    </div>
+</form>

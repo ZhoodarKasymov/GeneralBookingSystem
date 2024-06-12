@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BookingQueue.Common.Models.ViewModels.LoginViewModel
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Вход в админку";
+}
+
+<div>
+    <h4>
+        <bold>@ViewData["Title"]</bold>
+    </h4>
+</div>
+
+<form asp-controller="Auth" asp-action="Login" method="post" class="row g-3 needs-validation" novalidate>
+    @Html.AntiForgeryToken()
+    <p>Страница для входа в Админ систему.</p>
+    @* @Html.ValidationSummary() *@
+    <hr>
+    <div class="col-12 col-md-6">
+        <div class="form-group">
+            <div class="w-100">
+                <label>
+                    <span class="d-inline fw-bold">
+                        Логин
+                        <div class="d-inline text-danger">*</div>
+                    </span>
+                </label>
+                <div class="bs-custom-control w-100 d-flex flex-wrap align-items-center">
+                    <div class="w-100">
+                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control custom-input-gns", required = "required", autocomplete="off" })
+                        <div class="invalid-feedback">@(string.Format(Localization.GetLocalizedString("Validation_cant_be_empty"), "Логин"))</div>
+                        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <div class="form-group">
+            <div class="w-100">
+                <label>
+                    <span class="d-inline fw-bold">
+                        Пароль
+                        <div class="d-inline text-danger">*</div>
+                    </span>
+                </label>
+                <div class="bs-custom-control w-100 d-flex flex-wrap align-items-center">
+                    <div class="w-100">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control custom-input-gns", required = "required", autocomplete="off" })
+                        <div class="invalid-feedback">@(string.Format(Localization.GetLocalizedString("Validation_cant_be_empty"), "Пароль"))</div>
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mt-3">
+        <div class="row">
+            <div class="col-12 col-md-4 mt-3">
+                <button type="submit" class="btn custom_button_gns">Войти</button>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,127 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Name" xml:space="preserve">
+        <value>Аты</value>
+    </data>
+    <data name="Phone" xml:space="preserve">
+        <value>Телефон номери</value>
+    </data>
+    <data name="Header_title" xml:space="preserve">
+        <value>Кыргыз Республикасынын Финансы министрлигине караштуу
+Мамлекеттик салык кызматы</value>
+    </data>
+    <data name="Header_link_1" xml:space="preserve">
+        <value>Салык кызматы жөнүндө</value>
+    </data>
+    <data name="Header_link_2" xml:space="preserve">
+        <value>Сервистер</value>
+    </data>
+    <data name="Header_link_3" xml:space="preserve">
+        <value>Отчёт формалары</value>
+    </data>
+    <data name="Header_link_4" xml:space="preserve">
+        <value>Билим базасы</value>
+    </data>
+    <data name="Header_link_5" xml:space="preserve">
+        <value>Байланыштар</value>
+    </data>
+    <data name="Header_link_6" xml:space="preserve">
+        <value>Пресс-борбор</value>
+    </data>
+    <data name="Header_path_link" xml:space="preserve">
+        <value>Башкы бет</value>
+    </data>
+    <data name="Email_request" xml:space="preserve">
+        <value>Кезекке туруу боюнча көрсөтмөлөр</value>
+    </data>
+    <data name="HomePage_title" xml:space="preserve">
+        <value>Алдын ала каттоо системасы</value>
+    </data>
+    <data name="HomePage_description" xml:space="preserve">
+        <value>Жазуу процессин баштоо үчүн төмөндөгү форманы толтуруңуз. Жылдызча (*) менен белгиленген талаалар милдеттүү болуп саналат.</value>
+    </data>
+    <data name="Validation_cant_be_empty" xml:space="preserve">
+        <value>{0} бош болушу мүмкүн эмес.</value>
+    </data>
+    <data name="Agree" xml:space="preserve">
+        <value>Макулмун</value>
+    </data>
+    <data name="WithPrivacy" xml:space="preserve">
+        <value>шарттар менен</value>
+    </data>
+    <data name="Privacy_text" xml:space="preserve">
+        <value>Улантуудан мурун шарттарды кабыл алыңыз.</value>
+    </data>
+    <data name="Next" xml:space="preserve">
+        <value>Улантуу</value>
+    </data>
+    <data name="Services" xml:space="preserve">
+        <value>Көрсөтүлгөн кызматтар</value>
+    </data>
+    <data name="ChooseServices" xml:space="preserve">
+        <value>Кызматты тандаңыз</value>
+    </data>
+    <data name="ChooseDateTime" xml:space="preserve">
+        <value>Күндү жана убакытты тандаңыз</value>
+    </data>
+    <data name="BookingBtn" xml:space="preserve">
+        <value>Кезекке туруу</value>
+    </data>
+    <data name="RecaptchaErrorMessage" xml:space="preserve">
+        <value>Сиз Recaptcha текшерүүдөн өткөн жоксуз!</value>
+    </data>
+    <data name="ChooseServicesPlease" xml:space="preserve">
+        <value>Кызматты тандаңыз улантуу үчүн!</value>
+    </data>
+    <data name="ChooseDateAndTimePlease" xml:space="preserve">
+        <value>Күндү жана убакытты тандаңыз улантуу учун!</value>
+    </data>
+    <data name="YouInQueue" xml:space="preserve">
+        <value>Сиз кезектеcиз!</value>
+    </data>
+    <data name="Id" xml:space="preserve">
+        <value>Сиздин идентификациялык кодуңуз</value>
+    </data>
+    <data name="SaveElectronCode" xml:space="preserve">
+        <value>Электрондук кезектин кодун сактаңыз!</value>
+    </data>
+    <data name="Error_NotSaved" xml:space="preserve">
+        <value>Бир нерсе туура эмес болуп, кезек сакталган жок.</value>
+    </data>
+    <data name="Error_MaxCountOfUser" xml:space="preserve">
+        <value>Бош орун жок, башка убакытты тандаңыз!</value>
+    </data>
+    <data name="Error_PleaseChooseServiceBeforeDate" xml:space="preserve">
+        <value>Убакыт менен кунду тандоо учун биринчи кызматты танданыз!</value>
+    </data>
+    <data name="Error_PleaseChooseDateBeforeTime" xml:space="preserve">
+        <value>Күндү тандаңыз, убакытты тандоо үчүн!</value>
+    </data>
+    <data name="Error_NotWorking" xml:space="preserve">
+        <value>Жумуш убактысы эмес!</value>
+    </data>
+    <data name="Branch_Index_Title" xml:space="preserve">
+        <value>Филиалдары</value>
+    </data>
+    <data name="Branch_Index_Choose" xml:space="preserve">
+        <value>Филиалды тандаңыз</value>
+    </data>
+    <data name="Branch_Index_1" xml:space="preserve">
+        <value>Тейлөө борбору
+Ош шаары боюнча ишкерлерге</value>
+    </data>
+    <data name="Choose_date" xml:space="preserve">
+        <value>Күндү тандаңыз</value>
+    </data>
+</root>

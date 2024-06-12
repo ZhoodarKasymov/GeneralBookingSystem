@@ -1,0 +1,330 @@
+﻿@using BookingQueue.Common.Models
+@using System.Globalization
+@using Microsoft.AspNetCore.Html
+@model List<Services>
+
+@{
+    ViewData["Title"] = Localization.GetLocalizedString("Services");
+    var ci = CultureInfo.CurrentCulture.Name;
+}
+
+@Html.AntiForgeryToken()
+
+<div class="mb-3">
+    <h4>
+        <bold>@ViewData["Title"]</bold>
+    </h4>
+</div>
+<hr>
+
+<div class="g-3 needs-validation mt-3">
+    <h5 class="mt-5">
+        <bold>@Localization.GetLocalizedString("ChooseServices")</bold>
+    </h5>
+
+    <div class="row">
+        @GetSubServices(ci, 1)
+    </div>
+
+    <h5 class="mt-5 mb-2">
+        <bold>@Localization.GetLocalizedString("ChooseDateTime")</bold>
+    </h5>
+
+    <div class="row">
+        <div class="col-12 col-md-4 mt-3 custom-date-input">
+          <input type="date" id="gns_date" class="p-4 date-time" onfocus="'showPicker' in this && this.showPicker()">
+          <label style="display: none" class="data-label" for="gns_date">@Localization.GetLocalizedString("Choose_date")</label>
+        </div>
+
+        <div class="col-12 col-md-4 mt-3">
+            <select id="gns_time" class="p-4 date-time">
+                <option>@Localization.GetLocalizedString("Error_PleaseChooseDateBeforeTime")</option>
+            </select>
+        </div>
+    </div>
+
+    <hr class="mt-5 mb-5">
+
+    <div class="row">
+        <div class="col-12 col-md-4 mt-3">
+            <button class="btn custom_button_gns">@Localization.GetLocalizedString("BookingBtn")</button>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string RemoveFirstDigitsFromText(string input)
+    {
+        var result = input;
+
+        foreach (var ch in input)
+        {
+            if (char.IsDigit(ch) || ch == '.')
+            {
+                result = result.Remove(0, 1); // Remove the first character
+            }
+            else
+            {
+                break; // Exit the loop when a non-digit character is encountered
+            }
+        }
+
+        return result;
+    }
+    
+    private IHtmlContent GetSubServices(string ci, long? id)
+    {
+        var result = new HtmlContentBuilder();
+
+        foreach (var mainSubService in Model.Where(s => s.prent_id == id))
+        {
+            if (Model.Any(s => s.prent_id == mainSubService.Id))
+            {
+                var div = new TagBuilder("div");
+                div.AddCssClass("accordion accordion-flush ml-0");
+                div.Attributes["id"] = $"service_{mainSubService.Id}";
+
+                var accordionItem = new TagBuilder("div");
+                accordionItem.AddCssClass("accordion-item");
+
+                var accordionHeader = new TagBuilder("h2");
+                accordionHeader.AddCssClass("accordion-header");
+
+                var button = new TagBuilder("button");
+                button.AddCssClass("accordion-button collapsed");
+                button.Attributes["type"] = "button";
+                button.Attributes["data-bs-toggle"] = "collapse";
+                button.Attributes["data-bs-target"] = $"#flush-collapse_{mainSubService.Id}";
+                button.Attributes["aria-expanded"] = "false";
+                button.Attributes["aria-controls"] = $"flush-collapse_{mainSubService.Id}";
+                button.InnerHtml.AppendHtml(ci == "uk" ? mainSubService.TranslatedName : mainSubService.Name);
+
+                accordionHeader.InnerHtml.AppendHtml(button);
+
+                var accordionCollapse = new TagBuilder("div");
+                accordionCollapse.AddCssClass("accordion-collapse collapse");
+                accordionCollapse.Attributes["id"] = $"flush-collapse_{mainSubService.Id}";
+                accordionCollapse.Attributes["data-bs-parent"] = $"#service_{mainSubService.Id}";
+
+                var accordionBody = new TagBuilder("div");
+                accordionBody.AddCssClass("accordion-body row col-12");
+                accordionBody.InnerHtml.AppendHtml(GetSubServices(ci, mainSubService.Id));
+
+                accordionCollapse.InnerHtml.AppendHtml(accordionBody);
+                accordionItem.InnerHtml.AppendHtml(accordionHeader);
+                accordionItem.InnerHtml.AppendHtml(accordionCollapse);
+                div.InnerHtml.AppendHtml(accordionItem);
+
+                result.AppendHtml(div);
+            }
+            else
+            {
+                var div = new TagBuilder("div");
+                div.AddCssClass("mt-3 col-12 col-md-4");
+
+                var serviceCard = new TagBuilder("div");
+                serviceCard.AddCssClass("service_card p-4");
+                serviceCard.Attributes["data-id"] = mainSubService.Id.ToString();
+
+                var svg = new TagBuilder("svg");
+                svg.Attributes["xmlns"] = "http://www.w3.org/2000/svg";
+                svg.Attributes["width"] = "24";
+                svg.Attributes["height"] = "24";
+                svg.Attributes["viewBox"] = "0 0 24 24";
+                svg.Attributes["fill"] = "none";
+
+                var path = new TagBuilder("path");
+                path.Attributes["d"] = "M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z";
+                path.Attributes["fill"] = "#0C949A";
+
+                svg.InnerHtml.AppendHtml(path);
+                serviceCard.InnerHtml.AppendHtml(svg);
+                serviceCard.InnerHtml.AppendHtml(RemoveFirstDigitsFromText(ci == "uk" ? mainSubService.TranslatedName : mainSubService.Name));
+
+                div.InnerHtml.AppendHtml(serviceCard);
+                result.AppendHtml(div);
+            }
+        }
+
+        return result;
+    }
+}
+
+@section Scripts
+{
+    <script type="text/javascript">    
+         var label = $('.data-label');
+    
+        $('.service_card').click(function() {
+          $('.service_card').removeClass('gns-service-card-active');
+          $(this).addClass('gns-service-card-active');
+          $('#gns_date').val("");
+          $("#gns_time option").remove();
+          $("#gns_time").append(`<option>${'@Localization.GetLocalizedString("Error_PleaseChooseDateBeforeTime")'}</option>`);
+          if ($(window).width() < 768) {
+               label.removeClass('hide-important');
+               label.addClass('show-important');
+           }
+        });
+        
+        $('#gns_date').change(function(event){
+            let dataId = $('.gns-service-card-active').attr('data-id');            
+            let self = this;
+            
+             if (!dataId){
+                 dangerAlert('@Localization.GetLocalizedString("Error_PleaseChooseServiceBeforeDate")');
+                 event.preventDefault();
+                 $(self).val("");
+             }                 
+             else {
+                 let gnsDate = $('#gns_date').val();
+                 
+                 if (gnsDate){     
+                       label.addClass('hide-important');
+                       label.removeClass('show-important');
+                       showLoader();
+                       let dateTime = new Date(gnsDate + ' ' + '00:00:00');
+                    
+                       $.ajax({
+                            url: '@Url.Action("GetTimeWithPeriodByDate", "Home")',
+                            type: 'GET',
+                            data: { bookingTime: dateTime.toISOString(), serviceId: dataId },
+                            success: function(response) {                            
+                                $("#gns_time option").remove();
+                                for (let i = 0; i < response.length; i++){
+                                    $("#gns_time").append(`<option value="${response[i].value}">${response[i].text}</option>`);
+                                }
+                            },
+                            error: function(xhr) {
+                                dangerAlert(xhr.responseText);
+                                event.preventDefault();
+                                $(self).val("");
+                            },
+                            complete: function() {
+                                hideLoader();
+                            }
+                       });   
+                 }
+             }
+        });
+        
+        $('.custom_button_gns').click(function () {
+            let dataId = $('.gns-service-card-active').attr('data-id');
+            
+            if(!dataId)
+                dangerAlert('@Localization.GetLocalizedString("ChooseServicesPlease")');
+            else
+            {        
+                let gnsDate = $('#gns_date').val();
+                let gnsTime = $('#gns_time').val();
+                
+                if (!gnsDate || !gnsTime)
+                    dangerAlert('@Localization.GetLocalizedString("ChooseDateAndTimePlease")');
+                else
+                {                   
+                    let dateTimeString = gnsDate + ' ' + gnsTime;                    
+                    // Create a new Date object from the combined string
+                    let dateTime = new Date(dateTimeString);
+                    
+                    showLoader();
+                    
+                    let token = $("input[name='__RequestVerificationToken']").val();
+                    
+                    $.ajax({
+                      url: '@Url.Action("BookingTime", "Home")',
+                      type: 'POST',
+                      data: { bookingTime: dateTime.toISOString(), serviceId: dataId},
+                      beforeSend: function(xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", token);
+                      },
+                      success: function(response) {                            
+                        let html = `
+                            <div class="row text-center w-100 pt-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
+                                        <g clip-path="url(#clip0_1025_915)">
+                                            <path d="M25 0C31.6304 0 37.9893 2.63392 42.6777 7.32233C47.3661 12.0107 50 18.3696 50 25C50 31.6304 47.3661 37.9893 42.6777 42.6777C37.9893 47.3661 31.6304 50 25 50C18.3696 50 12.0107 47.3661 7.32233 42.6777C2.63392 37.9893 0 31.6304 0 25C0 18.3696 2.63392 12.0107 7.32233 7.32233C12.0107 2.63392 18.3696 0 25 0ZM21.8857 29.9321L16.3321 24.375C16.133 24.1759 15.8967 24.018 15.6366 23.9102C15.3764 23.8025 15.0976 23.747 14.8161 23.747C14.5345 23.747 14.2557 23.8025 13.9956 23.9102C13.7355 24.018 13.4991 24.1759 13.3 24.375C12.8979 24.7771 12.672 25.3224 12.672 25.8911C12.672 26.4597 12.8979 27.0051 13.3 27.4071L20.3714 34.4786C20.57 34.6787 20.8061 34.8375 21.0663 34.9459C21.3265 35.0542 21.6056 35.11 21.8875 35.11C22.1694 35.11 22.4485 35.0542 22.7087 34.9459C22.9689 34.8375 23.205 34.6787 23.4036 34.4786L38.0464 19.8321C38.2482 19.6339 38.4087 19.3976 38.5187 19.137C38.6287 18.8764 38.686 18.5966 38.6873 18.3137C38.6886 18.0309 38.6339 17.7505 38.5263 17.4889C38.4188 17.2273 38.2605 16.9896 38.0606 16.7894C37.8607 16.5893 37.6231 16.4307 37.3616 16.3228C37.1001 16.215 36.8199 16.1599 36.537 16.1609C36.2542 16.1619 35.9743 16.2189 35.7135 16.3286C35.4528 16.4383 35.2164 16.5985 35.0179 16.8L21.8857 29.9321Z" fill="#DADADA"/>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_1025_915">
+                                                <rect width="50" height="50" fill="white"/>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                    
+                                    <h3 class="mt-3">
+                                        <bold>${'@Localization.GetLocalizedString("YouInQueue")'}</bold>
+                                    </h3>
+                                    
+                                    <h5 class="mb-5 little-header-talon">
+                                        <bold>${'@Localization.GetLocalizedString("Id")'}</bold>
+                                    </h5>
+                                    <div class="body-talon">${response}</div>
+                                    <h5 class="mt-5 mb-3 little-header-talon">
+                                        <bold>${'@Localization.GetLocalizedString("SaveElectronCode")'}</bold>
+                                    </h5>
+                                    <div class="w-100 d-flex justify-content-center">
+                                        <div class="row wrapper-talon-action text-center">
+                                            <div class="col-4">
+                                                <div class="button-action-talon" onclick="broadCast(1)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                                                        <path d="M16.5 8V5H8.5V8H6.5V3H18.5V8H16.5ZM18.5 12.5C18.7833 12.5 19.021 12.404 19.213 12.212C19.405 12.02 19.5007 11.7827 19.5 11.5C19.5 11.2167 19.404 10.979 19.212 10.787C19.02 10.595 18.7827 10.4993 18.5 10.5C18.2167 10.5 17.979 10.596 17.787 10.788C17.595 10.98 17.4993 11.2173 17.5 11.5C17.5 11.7833 17.596 12.021 17.788 12.213C17.98 12.405 18.2173 12.5007 18.5 12.5ZM16.5 19V15H8.5V19H16.5ZM18.5 21H6.5V17H2.5V11C2.5 10.15 2.79167 9.43733 3.375 8.862C3.95833 8.28667 4.66667 7.99933 5.5 8H19.5C20.35 8 21.0627 8.28767 21.638 8.863C22.2133 9.43833 22.5007 10.1507 22.5 11V17H18.5V21ZM20.5 15V11C20.5 10.7167 20.404 10.479 20.212 10.287C20.02 10.095 19.7827 9.99933 19.5 10H5.5C5.21667 10 4.979 10.096 4.787 10.288C4.595 10.48 4.49933 10.7173 4.5 11V15H6.5V13H18.5V15H20.5Z" fill="white"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="button-action-talon" onclick="broadCast(2)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                                                        <path d="M6.5 20C5.95 20 5.479 19.804 5.087 19.412C4.695 19.02 4.49934 18.5493 4.5 18V15H6.5V18H18.5V15H20.5V18C20.5 18.55 20.304 19.021 19.912 19.413C19.52 19.805 19.0493 20.0007 18.5 20H6.5ZM12.5 16L7.5 11L8.9 9.55L11.5 12.15V4H13.5V12.15L16.1 9.55L17.5 11L12.5 16Z" fill="white"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="button-action-talon" onclick="broadCast(3)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                                                        <path d="M5.5 22C4.95 22 4.479 21.804 4.087 21.412C3.695 21.02 3.49934 20.5493 3.5 20V6H5.5V20H16.5V22H5.5ZM9.5 18C8.95 18 8.479 17.804 8.087 17.412C7.695 17.02 7.49934 16.5493 7.5 16V4C7.5 3.45 7.696 2.979 8.088 2.587C8.48 2.195 8.95067 1.99934 9.5 2H18.5C19.05 2 19.521 2.196 19.913 2.588C20.305 2.98 20.5007 3.45067 20.5 4V16C20.5 16.55 20.304 17.021 19.912 17.413C19.52 17.805 19.0493 18.0007 18.5 18H9.5ZM9.5 16H18.5V4H9.5V16Z" fill="white"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            Swal.fire({
+                              html: html,
+                              showConfirmButton: false,
+                              showCloseButton: true,
+                              customClass: {
+                                  closeButton: 'my-close-button-class-success',
+                                  title: 'popup-success-class'
+                              }
+                            }).then((result) => {
+                                if (result.isDismissed) {
+                                  window.location.href = '@Url.Action("Index", "Branch")';
+                                }
+                              });
+                            
+                            $(document).on('print-event', function() {
+                                printHtml(html);
+                            });
+                            $(document).on('download-event', function() {
+                                downloadHtml(html);
+                            });
+                            $(document).on('copy-event', function() {
+                                copyText(response);
+                            });
+                      },
+                      error: function(xhr) {
+                        dangerAlert(xhr.responseText);
+                      },
+                      complete: function() {
+                        hideLoader();
+                      }
+                    });
+                }
+            }      
+            
+        });
+    </script>
+}
+
