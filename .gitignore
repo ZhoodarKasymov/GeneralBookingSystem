@@ -36,4 +36,4 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
-BookingQueue/wwwroot/uploads/
+BookingQueue/wwwroot/uploads/*
