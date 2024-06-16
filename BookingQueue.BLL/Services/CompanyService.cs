@@ -142,4 +142,38 @@ public class CompanyService : ICompanyService
             return (companies, totalCount);
         }
     }
+    
+    public async Task<IEnumerable<Company>> GetAllCompaniesWithBranchesAsync()
+    {
+        var sql = @"
+            SELECT 
+                c.*, 
+                b.*
+            FROM 
+                companies c
+            LEFT JOIN 
+                branches b ON c.id = b.company_id
+            ORDER BY 
+                c.id, b.id;";
+
+        var companyDict = new Dictionary<int, Company>();
+
+        var result = await _dbConnection.QueryAsync<Company, Branch, Company>(
+            sql,
+            (company, branch) =>
+            {
+                if (!companyDict.TryGetValue(company.Id, out var currentCompany))
+                {
+                    currentCompany = company;
+                    currentCompany.Branches = new List<Branch>();
+                    companyDict.Add(currentCompany.Id, currentCompany);
+                }
+                currentCompany.Branches.Add(branch);
+                return currentCompany;
+            },
+            splitOn: "BranchId"
+        );
+
+        return companyDict.Values;
+    }
 }

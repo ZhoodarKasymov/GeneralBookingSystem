@@ -10,4 +10,5 @@ public interface ICompanyService
     Task CreateOrUpdateCompanyAsync(Company company);
     Task CreateOrUpdateBranchesAsync(int companyId, List<Branch> branches);
     Task<(IEnumerable<Company> Companies, int TotalCount)> GetCompaniesAsync(int pageNumber, int pageSize);
+    Task<IEnumerable<Company>> GetAllCompaniesWithBranchesAsync();
 }

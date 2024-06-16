@@ -57,6 +57,8 @@ public class SuperAdminController : Controller
     {
         if (ModelState.IsValid)
         {
+            model.Branches = model.Branches.Where(b => !b.ToDelete).ToList();
+            
             var company = new Company
             {
                 Id = model.Id,

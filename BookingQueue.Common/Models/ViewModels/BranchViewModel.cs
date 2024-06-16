@@ -8,4 +8,5 @@ public class BranchViewModel
     public string Connection { get; set; }
     public bool IsProgress { get; set; }
     public string Address { get; set; }
+    public bool ToDelete { get; set; }
 }
