@@ -17,14 +17,17 @@ using log4net.Config;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.OpenApi.Models;
 using MySql.Data.MySqlClient;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDistributedMemoryCache(); // Use a distributed cache for session state in a production scenario
+// Add services to the container.
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromHours(1); // Set session timeout
+    options.IdleTimeout = TimeSpan.FromHours(1);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -41,7 +44,6 @@ builder.Services.AddScoped<Func<string, IDbConnection>>(sp => key =>
     switch (key)
     {
         case DatabaseConstants.SessionBased:
-        {
             var session = httpContextAccessor.HttpContext?.Session;
             if (session != null)
             {
@@ -54,12 +56,9 @@ builder.Services.AddScoped<Func<string, IDbConnection>>(sp => key =>
 
             httpContextAccessor.HttpContext?.Response.Redirect("/");
             return null!;
-        }
         case DatabaseConstants.Default:
-        {
             var connectionString = configuration["ConnectionStrings:DefaultConnection"];
             return new MySqlConnection(connectionString);
-        }
         default:
             throw new ArgumentException($"Service with key '{key}' is not registered.");
     }
@@ -69,7 +68,6 @@ builder.Services.AddReCaptcha(builder.Configuration.GetSection("GoogleReCaptcha"
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddSingleton<LocService>();
 
-// Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddTransient<IServicesService, ServicesService>();
@@ -106,18 +104,26 @@ builder.Services.AddAuthentication(options =>
         options.LoginPath = "/Login";
     });
 
+// Add Swagger services
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "General Booking System API", Version = "v1" });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+    c.DocumentFilter<ApiControllerOperationFilter>();
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 // Configure log4net
-var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
+var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
 XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
 // Add global exception handling middleware
@@ -131,7 +137,6 @@ app.UseExceptionHandler(errorApp =>
         var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
         var exception = exceptionHandlerPathFeature?.Error;
 
-        // Log the exception
         var logger = LogManager.GetLogger(exceptionHandlerPathFeature?.Path);
         logger.Error("An error occurred.", exception);
 
@@ -142,7 +147,7 @@ app.UseExceptionHandler(errorApp =>
         }
 
         await context.Response.WriteAsync(
-            exception?.Message ?? "Произошла ошибка. Пожалуйста, повторите попытку позже.");
+            exception?.Message ?? "An error occurred. Please try again later.");
     });
 });
 
@@ -176,4 +181,35 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Branch}/{action=Index}/{id?}");
 
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Q Solution API V1");
+});
+
 app.Run();
+
+public class ApiControllerOperationFilter : IDocumentFilter
+{
+    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    {
+        // Get all API controller names
+        var apiControllerNames = context.ApiDescriptions
+            .Where(apiDesc => apiDesc.ActionDescriptor.RouteValues["controller"] != null &&
+                              apiDesc.ActionDescriptor.EndpointMetadata.Any(em => em.GetType().Name == "ApiControllerAttribute"))
+            .Select(apiDesc => apiDesc.ActionDescriptor.RouteValues["controller"]?.ToLower())
+            .Distinct()
+            .ToList();
+
+        // Remove non-API controller paths from the swagger document
+        foreach (var path in swaggerDoc.Paths.ToList())
+        {
+            var controllerName = path.Key.Split('/')[1];
+            if (!apiControllerNames.Contains(controllerName))
+            {
+                swaggerDoc.Paths.Remove(path.Key);
+            }
+        }
+    }
+}

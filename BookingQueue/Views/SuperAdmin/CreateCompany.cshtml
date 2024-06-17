@@ -124,8 +124,8 @@
         <div id="branchesList" class="mt-3">
             @for (int i = 0; i < Model.Branches.Count; i++)
             {
-                @Html.HiddenFor(m => m.Branches[i].ToDelete, new {@class="branch-to-delete", value="false"})
                 <div class="row g-3 branch mt-2" data-index="@i">
+                    @Html.HiddenFor(m => m.Branches[i].ToDelete, new {@class="branch-to-delete", value="false"})
                     <div class="col-12 col-md-6">
                         <div class="form-group">
                             <label>
@@ -189,7 +189,7 @@
 
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <button type="button" class="btn btn-danger remove-branch" data-index="@i">Удалить филиал</button>
+                            <button type="button" class="btn btn-outline-danger remove-branch" data-index="@i" data-id="@Model.Branches[i].Id">Удалить филиал</button>
                         </div>
                     </div>
                 </div>
@@ -197,7 +197,7 @@
         </div>
 
         <div class="mt-3">
-            <button type="button" id="addBranch" class="btn btn-primary">Добавить филиал</button>
+            <button type="button" id="addBranch" class="btn btn-outline-primary">+ Добавить филиал</button>
         </div>
     </div>
 
@@ -277,7 +277,7 @@
 
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <button type="button" class="btn btn-danger remove-branch" data-index="{index}">Удалить филиал</button>
+                            <button type="button" class="btn btn-outline-danger remove-branch" data-index="{index}">Удалить филиал</button>
                         </div>
                     </div>
                 </div>
@@ -301,9 +301,15 @@
             });
 
             $(document).on('click', '.remove-branch', function () {
-                $(this).closest('.branch').hide();
-                const index = $(this).data('index');
-                $("#branchesList").find(`#Branches_${index}__ToDelete`).val("True");
+                debugger;
+                if ($(this).data('id')){
+                    $(this).closest('.branch').hide();
+                    const index = $(this).data('index');
+                    $(".branch").find(`#Branches_${index}__ToDelete`).val("True");
+                }else{
+                    $(this).closest('.branch').remove();
+                }
+                
                 updateBranchIndices();
             });
 

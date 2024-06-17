@@ -11,6 +11,7 @@ public class Company
     public string CompanyLink { get; set; }
     public string CompanyPhone { get; set; }
     public string CompanyMail { get; set; }
+    public DateTime? DeletedAt { get; set; }
     public List<Branch> Branches { get; set; }
     public User.User User { get; set; }
 

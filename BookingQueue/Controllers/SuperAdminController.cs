@@ -97,6 +97,13 @@ public class SuperAdminController : Controller
         return View(model);
     }
 
+    [HttpGet("/admin/delete-company")]
+    public async Task<IActionResult> DeleteCompany(int companyId)
+    {
+        await _companyService.DeleteCompany(companyId);
+        return RedirectToAction("SuperAdminPage");
+    }
+
     #region Private methods
 
     private string HashPassword(string password)

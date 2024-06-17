@@ -26,11 +26,14 @@ public class CompanyService : ICompanyService
     public async Task<Company?> GetCompanyByIdAsync(int id)
     {
         var sql = @"
-            SELECT * FROM companies WHERE Id = @CompanyId;
+            SELECT * FROM companies WHERE Id = @CompanyId AND deletedAt IS NULL;
             SELECT * FROM branches WHERE company_id = @CompanyId;";
         
         await using var multi = await _dbConnection.QueryMultipleAsync(sql, new { CompanyId = id });
         var company = await multi.ReadFirstOrDefaultAsync<Company>();
+
+        if (company is null) throw new NoNullAllowedException("Компания не найдена или была удалена!");
+        
         var branches = await multi.ReadAsync<Branch>();
 
         company.Branches = branches.ToList();
@@ -109,7 +112,7 @@ public class CompanyService : ICompanyService
 
     public async Task<IEnumerable<Company>> GetCompaniesAsync()
     {
-        var sql = @"SELECT * FROM companies";
+        var sql = @"SELECT * FROM companies WHERE deletedAt IS NULL";
         var companies = await _dbConnection.QueryAsync<Company>(sql);
         return companies;
     }
@@ -122,6 +125,7 @@ public class CompanyService : ICompanyService
                 u.id AS UserId, u.username, u.password_hash, u.company_id
             FROM companies c
             LEFT JOIN users u ON c.id = u.company_id
+            WHERE c.deletedAt IS NULL
             ORDER BY c.id
             LIMIT @PageSize OFFSET @Offset;
             SELECT FOUND_ROWS();";
@@ -148,11 +152,12 @@ public class CompanyService : ICompanyService
         var sql = @"
             SELECT 
                 c.*, 
-                b.*
+                b.id AS BranchId, b.id, b.name, b.connection, b.is_progress, b.address
             FROM 
                 companies c
             LEFT JOIN 
                 branches b ON c.id = b.company_id
+            WHERE c.deletedAt IS NULL
             ORDER BY 
                 c.id, b.id;";
 
@@ -175,5 +180,14 @@ public class CompanyService : ICompanyService
         );
 
         return companyDict.Values;
+    }
+
+    public async Task DeleteCompany(int companyId)
+    {
+        var sql = @"UPDATE companies
+                    SET deletedAt = now()
+                    WHERE id = @CompanyId;";
+
+        var result = await _dbConnection.ExecuteAsync(sql, new { CompanyId = companyId });
     }
 }

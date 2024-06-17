@@ -7,6 +7,11 @@
         <UserSecretsId>d4552ef1-d54c-453a-9591-7f6b2cf2f83b</UserSecretsId>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\BookingQueue.BLL\BookingQueue.BLL.csproj" />
     </ItemGroup>
@@ -18,6 +23,7 @@
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
       <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
 

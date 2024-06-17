@@ -40,7 +40,8 @@
                 <td><img src="@company.IconPath" alt="Icon" style="height: 50px;"></td>
                 <td>
                     <!-- Add action buttons here -->
-                    <a href="@Url.Action("CreateCompany", new { companyId = company.Id })" class="btn btn-primary">Редактировать</a>
+                    <a href="@Url.Action("CreateCompany", new { companyId = company.Id })" class="btn btn-outline-primary">Редактировать</a>
+                    <a href="@Url.Action("DeleteCompany", new { companyId = company.Id })" class="btn btn-outline-danger">Удалить</a>
                 </td>
             </tr>
         }
