@@ -173,6 +173,8 @@ public class CompanyService : ICompanyService
                     currentCompany.Branches = new List<Branch>();
                     companyDict.Add(currentCompany.Id, currentCompany);
                 }
+
+                branch.CompanyId = company.Id;
                 currentCompany.Branches.Add(branch);
                 return currentCompany;
             },

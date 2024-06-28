@@ -1,4 +1,5 @@
-﻿using BookingQueue.Common.Models.ViewModels;
+﻿using System.Text.Json.Serialization;
+using BookingQueue.Common.Models.ViewModels;
 
 namespace BookingQueue.Common.Models.Company;
 
@@ -13,6 +14,7 @@ public class Company
     public string CompanyMail { get; set; }
     public DateTime? DeletedAt { get; set; }
     public List<Branch> Branches { get; set; }
+    [JsonIgnore]
     public User.User User { get; set; }
 
     public CompanyViewModel ToViewModel()

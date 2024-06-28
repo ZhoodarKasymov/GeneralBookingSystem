@@ -56,4 +56,10 @@ public class AuthController : Controller
         await HttpContext.SignOutAsync();
         return RedirectToAction("Login", "Auth");
     }
+    
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View();
+    }
 }

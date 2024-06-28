@@ -75,6 +75,7 @@ builder.Services.AddTransient<IAdvanceService, AdvanceService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ICompanyService, CompanyService>();
 builder.Services.AddTransient(typeof(FileUploadService));
+builder.Services.AddTransient<IApiService, ApiService>();
 
 FluentMapper.Initialize(cfg =>
 {
@@ -118,7 +119,7 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Auth/Error");
     app.UseHsts();
 }
 
@@ -136,18 +137,20 @@ app.UseExceptionHandler(errorApp =>
 
         var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
         var exception = exceptionHandlerPathFeature?.Error;
+        var isApiRequest = exceptionHandlerPathFeature?.Path.Contains("api") ?? false;
 
         var logger = LogManager.GetLogger(exceptionHandlerPathFeature?.Path);
         logger.Error("An error occurred.", exception);
+        
+        if(isApiRequest) return;
 
         if (exceptionHandlerPathFeature?.Error is NullReferenceException)
         {
             context.Response.Redirect("/");
             return;
         }
-
-        await context.Response.WriteAsync(
-            exception?.Message ?? "An error occurred. Please try again later.");
+        
+        context.Response.Redirect("/Auth/Error");
     });
 });
 

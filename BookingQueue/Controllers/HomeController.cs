@@ -91,12 +91,6 @@ public class HomeController : Controller
         return LocalRedirect(returnUrl);
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View();
-    }
-
     #region Private methods
 
     private void ValidateParams(DateTime? bookingDate, long? serviceId)

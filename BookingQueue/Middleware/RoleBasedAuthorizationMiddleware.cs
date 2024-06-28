@@ -5,17 +5,19 @@ namespace BookingQueue.Middleware;
 public class RoleBasedAuthorizationMiddleware
 {
     private readonly RequestDelegate _next;
-    private const string PrivateKey = "8402b7760a784d6f99c0536eefc9c2af";
+    private readonly IConfiguration _configuration;
 
-    public RoleBasedAuthorizationMiddleware(RequestDelegate next)
+    public RoleBasedAuthorizationMiddleware(RequestDelegate next, IConfiguration configuration)
     {
         _next = next;
+        _configuration = configuration;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
+        var apiPrivateKey = _configuration.GetValue<string>("ApiPrivateKey");
         var userRole = context.User.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
-        var hasSamePrivateKey = context.Request.Headers.Any(h => h.Key == PrivateKey);
+        var hasSamePrivateKey = context.Request.Headers.Any(h => h.Key == apiPrivateKey);
 
         if (context.Request.Path.StartsWithSegments("/api") && !hasSamePrivateKey)
         {
